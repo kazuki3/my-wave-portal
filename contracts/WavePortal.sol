@@ -18,12 +18,22 @@ contract WavePortal {
     }
 
     Wave[] waves;
+
+    mapping(address => uint256) public lastWaveAt; 
+
     constructor() payable {
         console.log("WavePortal - Smart Contract!");
         seed = (block.timestamp + block.difficulty) % 100;
     }
 
     function wave(string memory _message) public {
+        require(
+            lastWaveAt[msg.sender] + 15 minutes < block.timestamp,
+            "Wait 15min"
+        );
+
+        lastWaveAt[msg.sender] = block.timestamp;
+
         totalWaves += 1;
         console.log("%s waved w/ message %s", msg.sender, _message);
 
